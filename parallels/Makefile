@@ -16,7 +16,8 @@ parallels: parallels.hs
 
 test:
 	make $(PROG)
-	./parallel
+	./parallels
+	make clean
 
 clean:
 	rm -f $(PROG)
