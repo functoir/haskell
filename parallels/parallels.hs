@@ -1,15 +1,15 @@
+import Control.Parallel ( par, pseq )
+import GHC.Types ( Any )
+
+
 -- |
 --  File: parallels.hs
 --  Purpose: Basic Parallel computing in Haskell.
 --  Author: siavava <amittaijoel@outlook.com>
 -- 
 
-import Control.Parallel ( par, pseq )
-import GHC.Types ( Any )
 
-{-|
-  main -> Driver
--}
+-- | main -> Driver
 main :: IO ()
 main = a `par` b `par` c `pseq` print (a + b + c)
   where
