@@ -7,6 +7,13 @@ myReverse :: [a] -> [a]
 myReverse [] = []
 myReverse (x:xs) = myReverse xs ++ [x]
 
+
+myRevFold :: [a] -> [a]
+myRevFold = foldr prepend []
+  where
+    prepend :: a -> [a] -> [a]
+    prepend num arr = arr ++ [num]
+
 -- | Function to sort an array
 mySort :: Ord a => [a] -> [a]
 mySort [] = []
@@ -15,7 +22,7 @@ mySort (x:y:xs)
   | x > y = flip (y : mySort (x : xs))
   | otherwise = flip (x : mySort (y : xs))
   where
-    -- | Function to flipthe first two elements in an array
+    -- | Function to flip the first two elements in an array
     --   and re-sort the array if needed
     flip :: Ord t => [t] -> [t]
     flip [] = []
@@ -41,6 +48,8 @@ main = do
 
   putStr "reversed array = "
   print $ myReverse myArr
+  putStr "myRevFold: "
+  print $ myRevFold myArr
 
   putStr "sorted and reversed array = "
   let sortRev = myDot myReverse mySort
