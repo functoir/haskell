@@ -1,3 +1,7 @@
+module MyLists(
+  MyLists.asc,
+  MyLists.sum
+) where
 import Data.List
 
 asc :: (Ord t, Num t) => t -> t -> [t]
@@ -16,4 +20,4 @@ main = do
   putStr "is null: "
   print (null myList)
   putStr "sum : "
-  print (Main.sum myList)
+  print (MyLists.sum myList)

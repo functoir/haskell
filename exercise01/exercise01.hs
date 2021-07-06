@@ -66,7 +66,7 @@ isAsc (x:y:xs) =
 -- ! 02 Directed Paths in Graphs -- Depth First Search
 
 hasPath :: [(Int, Int)] -> Int -> Int -> Bool
-hasPath [] u v = u == v                          -- Empty Graph cannot contain path
+hasPath [] u v = u == v                          -- Empty Graph cannot contain path except node to itself
 hasPath arr u v
   | u == v = True
   | otherwise = 
