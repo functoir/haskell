@@ -3,7 +3,7 @@
 
 SHELL := bash
 CC = ghc
-PROG = folding
+PROG := folding
 SOURCES = $(PROG).hs
 
 all: $(PROG)

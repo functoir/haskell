@@ -1,0 +1,20 @@
+make all
+make[1]: Entering directory '/workspace/personal/haskell/composition'
+ghc  composition.hs -o composition
+[1 of 1] Compiling Main             ( composition.hs, composition.o )
+Linking composition ...
+make[1]: Leaving directory '/workspace/personal/haskell/composition'
+./composition
+array = [12,13,1,17,234,6,483924,534,3,2,15,7,0,22,3]
+sorted array = [0,1,2,3,3,6,7,12,13,15,17,22,234,534,483924]
+[0,1,2,3,3,6,7,12,13,15,17,22,234,534,483924]
+[0,1,2,3,3,6,7,12,13,15,17,22,234,534,483924]
+reversed array = [3,22,0,7,15,2,3,534,483924,6,234,17,1,13,12]
+myRevFold: [3,22,0,7,15,2,3,534,483924,6,234,17,1,13,12]
+sorted and reversed array = [483924,534,234,22,17,15,13,12,7,6,3,3,2,1,0]
+make clean
+make[1]: Entering directory '/workspace/personal/haskell/composition'
+rm -f composition
+rm -f *.hi
+rm -f *.o
+make[1]: Leaving directory '/workspace/personal/haskell/composition'

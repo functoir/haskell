@@ -1,17 +1,27 @@
 module Main where
 
 -- The following are equivalent functions
-addV1 :: Int -> Int -> Int
+addV1 :: Num a => a -> a -> a 
 addV1 x y = x + y
 
 addV2 :: Num a => a -> a -> a
 addV2 x = (\y -> x + y)
 
-add :: Int -> Int -> Int
+add :: Num a => a -> a -> a
 add = (\x -> (\y -> x + y))
 
+mult :: Num a => a -> a -> a
+mult x y = x * y
 
+multV2 :: Num a => a -> a -> a
+multV2 = (\x -> (\y -> x * y))
 
+multBySum :: (Num a, Num b, Ord b) => a -> b -> a
+multBySum num count
+  | count <= 0 = 0
+  | count == 1 = num
+  | otherwise = num * multBySum num (count - 1)
+  
 
 main :: IO ()
 main = do
@@ -24,4 +34,7 @@ main = do
   let add5 = add 5
   print (add1 2)
   print (add5 2)
+
+  let mult10 = multBySum 1.1
+  print $ mult10 10
   
