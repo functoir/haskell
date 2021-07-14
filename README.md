@@ -4,7 +4,7 @@
 
 ***
 
-Each directory has an acoompanying [Makefile](https://en.wikipedia.org/wiki/Make_(software))
+Each directory has an accompanying [Makefile](https://en.wikipedia.org/wiki/Make_(software))
 
 To build, run `make`.
 
