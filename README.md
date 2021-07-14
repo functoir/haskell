@@ -16,4 +16,4 @@ NOTE: `make test` automatically builds before and cleans up after itself.
 
 ***
 
-&copy [siavava](https://siavava.me)
+&copy; [siavava](https://siavava.me)
