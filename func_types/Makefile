@@ -3,6 +3,8 @@
 
 SHELL := bash
 CC = ghc
+CFLAGS = -Wall
+ASM = -S
 PROG = func_types
 
 all: $(PROG)

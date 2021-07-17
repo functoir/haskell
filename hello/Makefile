@@ -13,6 +13,9 @@ hello: hello.hs
 	rm -f hello.hi
 	rm -f hello.o
 
+assembly: hello.hs
+	$(CC) -S -o hello.asm $^
+
 test:
 	make $(PROG)
 	./hello
