@@ -2,7 +2,7 @@ module MyLists(
   MyLists.asc,
   MyLists.sum
 ) where
-import Data.List
+import Data.List ()
 
 asc :: (Ord t, Num t) => t -> t -> [t]
 asc lo hi

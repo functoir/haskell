@@ -42,6 +42,17 @@ lagrange xs x = foldl (\acc (xj, y) -> acc + (y * l xj)) 0 xs
           | xj == xk = acc
           | otherwise = acc * (x - xk) / (xj - xk)
 
+lagrange2 :: [(Float, Float)] -> Float -> Float 
+lagrange2 trainset  x = foldl add 0 trainset
+  where 
+    add acc (xj, y) = acc + y * offset xj
+      where 
+        offset xj = foldl accumulate 1 trainset
+          where 
+            accumulate acc (xk, _)
+              | xj == xk = acc
+              | otherwise = acc * (x - xk) / (xj - xk)
+
 main :: IO ()
 main = do
   let myArray = [1, 2, 3, 4, 5]
