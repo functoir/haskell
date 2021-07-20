@@ -1,5 +1,7 @@
 module Main where
 
+import Prelude hiding (flip)
+
 myDot :: (b -> c) -> (a -> b) -> a -> c
 myDot f g x = f (g x)
 
@@ -30,6 +32,19 @@ mySort (x:y:xs)
     flip (x : y : xs)
       | x > y = mySort (y : x : xs)
       | otherwise = x : y : xs
+
+
+flip :: (t1 -> t2 -> t3) -> t2 -> t1 -> t3
+flip func x y = func y x
+
+divide :: Double -> Double -> Double
+divide = flip (/)
+
+sumCubes :: Num a => [a] -> a
+sumCubes arr = compile arr 0
+  where
+    compile [] sum = sum
+    compile (x:xs) sum = compile xs (sum + x^3)
       
 
 main :: IO ()
@@ -54,3 +69,8 @@ main = do
   putStr "sorted and reversed array = "
   let sortRev = myDot myReverse mySort
   print $ sortRev myArr
+
+  print $ divide 2 3
+
+  let newArr = [1, 2, 3, 4, 5]
+  print $ sumCubes newArr

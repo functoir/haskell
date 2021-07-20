@@ -33,14 +33,12 @@ main = do
   -- word <- getLine
   -- print word
   let myArr = [1..10]
-  putStrLn ""
-  putStrLn ""
+  putStr "\n\n"
   print $ "Array: " ++ show myArr
   print $ "backwardRev: " ++ show (backwardRev myArr)
   print $ "tailRev: " ++ show (tailRev myArr)
-  putStrLn ""
+  putStrLn "\n\n"
   print $ "backwardFib 10 = " ++ show (backwardFib 10)
   print $ "tailFib 10 = " ++ show (tailFib 10)
 
-  putStrLn ""
-  putStrLn ""
+  putStr "\n\n"
