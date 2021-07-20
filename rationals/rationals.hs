@@ -1,18 +1,14 @@
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE InstanceSigs #-}
 
-
 module Main where
 
 import Control.Exception.Base (Exception)
 
-data RAT = 
-  -- | Default constructor
-  RAT
-  { 
-    num :: Int, -- ^ Numerator
-    denom :: Int -- ^ Denominator
-  }
+data RAT = RAT {
+  num :: Int, -- ^ Numerator
+  denom :: Int -- ^ Denominator
+}
 
 -- ! Instances of RAT
 
