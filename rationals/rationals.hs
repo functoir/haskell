@@ -4,6 +4,7 @@
 module Main where
 
 import Control.Exception.Base (Exception)
+import Unsafe.Coerce ()
 
 data RAT = RAT {
   num :: Int, -- ^ Numerator
@@ -32,9 +33,7 @@ signum' x = x `div` abs' x
 
 -- |The `abs` function finds the absolute value of a number.
 abs' :: (Ord p, Num p) => p -> p
-abs' x
-  | x >= 0 = x
-  | otherwise = -x
+abs' x = if x < 0 then -x else x
 
 -- | The `gcd` function finds the greatest common divisor of two numbers.
 gcd' :: Integral t => t -> t -> t
@@ -46,16 +45,20 @@ gcd' x y = gcd'' (abs' x) (abs' y)
 
 -- ! RATIONAL NUMBER OPERATIONS
 
+
+errRAT :: RAT -> String 
+errRAT r = error "Invalid rational number: " ++ show r
+
 -- | the `normRAT` function normalizes a rational number.
 normRAT :: RAT -> RAT
-normRAT RAT {num, denom}
-  | denom == 0 = error "Invalid denominator"
-  | num == 0 = RAT 0 1
+normRAT r
+  | denom r == 0 = error ("Invalid rational number: " ++ show r)
+  | num r == 0 = RAT 0 1
   | otherwise = RAT (a `div` d) (b `div` d)
   where
-    a = signum' denom * num      -- Find sign of denominator, convert numerator
-    b = abs' denom               -- Find absolute value of denominator
-    d = gcd' a b                 -- Find greatest common divisor of numerator and denominator
+    a = signum' (denom r) * num r       -- Find sign of denominator, convert numerator
+    b = abs' (denom r)                  -- Find absolute value of denominator
+    d = gcd' a b                        -- Find greatest common divisor of numerator and denominator
 
 
 -- | The `negRAT` function negates a rational number.
@@ -74,7 +77,7 @@ recRAT RAT {num, denom} = normRAT (RAT denom num)
 -- | Add two rational numbers.
 (!+) p q = normRAT (RAT (num p*denom q + num q*denom p) (denom p * denom q))
 
--- | Subtract two` rational numbers.
+-- | Subtract two rational numbers.
 (!-) p q = normRAT (RAT (num p*denom q - num q * denom p) (denom p * denom q))
 
 -- | Multiply two rational numbers.
@@ -120,6 +123,6 @@ main = do
   putStr "\n\n"
   print $ show someRAT ++ " + " ++ show otherRAT ++ " + " ++ show thirdRAT ++ " = " ++ show (someRAT !+ otherRAT !+ thirdRAT)
 
-  
+
   print (RAT 3 0)
-  -- ! print (initRAT 3 0) 
+  -- print (initRAT 3 0) 
