@@ -6,10 +6,22 @@ module Main where
 import Control.Exception.Base (Exception)
 import Unsafe.Coerce ()
 
-data RAT = RAT {
-  num :: Int, -- ^ Numerator
-  denom :: Int -- ^ Denominator
-}
+data RAT =
+  {- | RAT data type for rational numbers.
+    NOTE: To initialize a rat, use the `initRAT` function,
+    which initializes and refactors it as opposed to the `RAT`
+    constructor which stores unfactored values.
+  -}
+  RAT {
+    num :: Int, -- ^ Numerator
+    denom :: Int -- ^ Denominator
+  }
+
+-- ! Initializer
+
+-- | Create and initialize a rational number.
+initRAT :: Int -> Int -> RAT
+initRAT num denom = normRAT (RAT num denom)
 
 -- ! Instances of RAT
 
@@ -27,11 +39,11 @@ instance Ord RAT where
 
 -- ! HELPERS
 
--- |The `signum` function finds the sign of a number.
+-- | The `signum` function finds the sign of a number.
 signum' ::  Integral a => a -> a
-signum' x = x `div` abs' x
+signum' x = if x < 0 then -1 else 1
 
--- |The `abs` function finds the absolute value of a number.
+-- | The `abs'` function finds the absolute value of a number.
 abs' :: (Ord p, Num p) => p -> p
 abs' x = if x < 0 then -x else x
 
@@ -63,11 +75,11 @@ normRAT r
 
 -- | The `negRAT` function negates a rational number.
 negRAT :: RAT -> RAT
-negRAT RAT {num, denom} = normRAT (RAT (-num) denom)
+negRAT RAT {num, denom} = initRAT (-num) denom
 
 -- | The `recRAT` function finds the reciprocal of a rational number.
 recRAT :: RAT -> RAT
-recRAT RAT {num, denom} = normRAT (RAT denom num)
+recRAT RAT {num, denom} = initRAT denom num
 
 
 -- ! PRIMITIVE OPERATIONS
@@ -75,22 +87,16 @@ recRAT RAT {num, denom} = normRAT (RAT denom num)
 (!+), (!-), (!*), (!/) :: RAT -> RAT -> RAT
 
 -- | Add two rational numbers.
-(!+) p q = normRAT (RAT (num p*denom q + num q*denom p) (denom p * denom q))
+(!+) p q = initRAT (num p*denom q + num q*denom p) (denom p * denom q)
 
 -- | Subtract two rational numbers.
-(!-) p q = normRAT (RAT (num p*denom q - num q * denom p) (denom p * denom q))
+(!-) p q = initRAT (num p*denom q - num q * denom p) (denom p * denom q)
 
 -- | Multiply two rational numbers.
-(!*) p q = normRAT (RAT (num p*num q) (denom p * denom q))
+(!*) p q = initRAT (num p*num q) (denom p * denom q)
 
 -- | Divide two rational numbers.
-(!/) p q = normRAT (RAT (num p*denom q) (num q * denom p))
-
--- ! Initializer
-
--- | Create and initialize a rational number.
-initRAT :: Int -> Int -> RAT
-initRAT num denom = normRAT (RAT num denom)
+(!/) p q = initRAT (num p*denom q) (num q * denom p)
 
 
 main :: IO ()
