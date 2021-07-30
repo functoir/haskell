@@ -25,7 +25,7 @@ tailFib n = pace n 0 1
   where
     pace n first second
       | n == 0 = first
-      | otherwise = pace (n - 1) second (first + second)
+      | otherwise = pace (n - 1) second $! first + second
 
 main :: IO ()
 main = do
