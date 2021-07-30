@@ -1,5 +1,5 @@
--- {-# LANGUAGE DatatypeContexts #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE BangPatterns #-}
 
 
 {-- | 
@@ -12,7 +12,7 @@
     isLT, isEQ, isGT,
     size, height, sumTree,
     minElem, maxElem`
---} 
+--}
 module BinTree (
   BinTree (Empty, Node),
   isEmpty,
@@ -132,8 +132,9 @@ insert :: (Eq a, Ord a) => a -> BinTree a -> BinTree a
 insert item node
   | isEmpty node = Node Empty item Empty
   | isEQ item node = node
-  | isLT item node = Node (left node) (val node) (insert item (right node))
-  | isGT item node = Node (insert item (left node)) (val node) (right node)
+  | isLT item node = Node (left node) (val node) $! insert item (right node)
+  | isGT item node = let !newLeft = insert item (left node) in
+    Node newLeft (val node) (right node)
   | otherwise = node
 
 -- | Delete value from a `BinTree` instance.
@@ -149,8 +150,8 @@ delete item node
         | isEmpty (left t) && isEmpty (right t) = Empty
         | isEmpty $ left t = right t
         | isEmpty $ right t = left t
-        | otherwise = let successor = minElem $ right t in
-          Node (left t) successor (delete successor (right t))
+        | otherwise = let !successor = minElem $ right t in
+          Node (left t) successor $! delete successor (right t)
 
 -- ! folding
 
@@ -177,11 +178,11 @@ buildTree arr = constr Empty (qsort arr)
     constr t [] = t
     constr t array =
       Node (constr (left inserted) (smallerElements item array))
-       (val inserted)
-        (constr (right inserted) (biggerElements item array))
+        (val inserted)
+        $! constr (right inserted) (biggerElements item array)
         where
-          inserted = insert item t
-          item = array !! ((length array - 1) `div` 2)
+          !inserted = insert item t
+          !item = array !! ((length array - 1) `div` 2)
 
 {- ARRAY HELPERS -}
 
@@ -191,9 +192,9 @@ qsort arr = build arr []
   where
     build [] acc = acc
     build (x:xs) acc = build lXS $! (x : build rXS acc)
-      where 
-        lXS = smallerElements x xs
-        rXS = biggerElements x xs
+      where
+        !lXS = smallerElements x xs
+        !rXS = biggerElements x xs
 
 -- | Filter out smaller elements in an array.
 smallerElements :: Ord a => a -> [a] -> [a]
