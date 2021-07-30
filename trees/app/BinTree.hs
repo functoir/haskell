@@ -192,19 +192,13 @@ qsort arr = build arr []
     build [] acc = acc
     build (x:xs) acc = build lXS (x : build rXS acc)
       where 
-        lXS = [y | y <- xs, y < x]
-        rXS = [y | y <- xs, y >= x]
+        lXS = smallerElements x xs
+        rXS = biggerElements x xs
 
 -- | Filter out smaller elements in an array.
 smallerElements :: Ord a => a -> [a] -> [a]
-smallerElements _ [] = []
-smallerElements n (x:xs)
-  | x < n = x : smallerElements n xs
-  | otherwise = smallerElements n xs
+smallerElements n xs = [y | y <- xs, y < n]
 
 -- | Filter out bigger elements in an array.
 biggerElements :: Ord a => a -> [a] -> [a]
-biggerElements _ [] = []
-biggerElements n (x:xs)
-  | x > n = x : biggerElements n xs
-  | otherwise = biggerElements n xs
+biggerElements n xs = [y | y <- xs, y > n]
