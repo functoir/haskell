@@ -43,7 +43,7 @@ main = do
 
   let newTree = insert (-10) (insert 21 tree5)
   print newTree
-  print $ toArray newTree
+  print $ "array = " ++ show (toArray newTree)
   print $! size newTree
   print $! "sum = " ++ show (sumTree newTree)
   print $! "height = " ++ show (height newTree)

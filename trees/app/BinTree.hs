@@ -2,6 +2,17 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 
+{-- | 
+  Module implementing a Binary Tree in Haskell.
+  Exported functions include: 
+    `BinTree (Empty, Node),
+    isEmpty,
+    buildTree, toArray,
+    contains, insert, delete,
+    isLT, isEQ, isGT,
+    size, height, sumTree,
+    minElem, maxElem`
+--} 
 module BinTree (
   BinTree (Empty, Node),
   isEmpty,
@@ -12,6 +23,7 @@ module BinTree (
   minElem, maxElem
 ) where
 
+import Prelude
 
 data BinTree a =
   Empty -- ^ Empty constructor
@@ -23,6 +35,7 @@ data BinTree a =
     right :: BinTree a  -- ^ right node
   }
 
+-- | Check equality of two trees, including a recursive check of their left and right children.
 instance (Eq a, Ord a) => Eq (BinTree a) where
   (==) a b = check a b True
     where
@@ -32,6 +45,7 @@ instance (Eq a, Ord a) => Eq (BinTree a) where
         | isEmpty t1 || isEmpty t2 = False
         | otherwise = check (left t1) (left t2) $! (check (right t1) (right t2) $! (val t1 == val t2))
 
+-- | Generate an ordering of two tree nodes.
 instance Ord a => Ord (BinTree a) where
   compare t1 t2
     | isEmpty t1 && isEmpty t2 = EQ
@@ -40,6 +54,7 @@ instance Ord a => Ord (BinTree a) where
     | otherwise = compare (val t1) (val t2)
 
 
+-- | Generate a string representation of a `BinTree`.
 instance Show a => Show (BinTree a) where
   show t
     | isEmpty t = "Empty tree."
@@ -90,8 +105,6 @@ height node
 sumTree :: Num a => BinTree a -> a
 sumTree = treeFold (+) 0
 
-
-
 -- | Check whether a`BinTree` instance contains given value.
 contains :: (Eq a, Ord a) => a -> BinTree a -> Bool
 contains item node
@@ -140,8 +153,10 @@ delete item node
           Node (left t) successor (delete successor (right t))
 
 -- ! folding
+
+-- | fold a function over a tree.
 treeFold :: (a -> b -> b) -> b -> BinTree a -> b
-treeFold f acc Empty = acc
+treeFold _ acc Empty = acc
 treeFold f acc (Node l v r) = treeFold f (treeFold f (f v acc ) l) r
 
 
@@ -152,11 +167,11 @@ toArray :: (Ord a) => BinTree a -> [a]
 toArray node = build node []
   where
     build Empty arr = arr
-    build t arr = build (left t) [] ++ [val t] ++ build (right t) []
+    build (Node l v r) arr = build l $! v : build r arr
 
 -- | Construct a balanced Binary tree from a list of values.
 buildTree :: (Eq a, Ord a) => [a] -> BinTree a
-buildTree arr = constr Empty (quicksort arr)
+buildTree arr = constr Empty (qsort arr)
   where
     constr :: (Ord a) => BinTree a -> [a] -> BinTree a
     constr t [] = t
@@ -169,11 +184,16 @@ buildTree arr = constr Empty (quicksort arr)
           item = array !! ((length array - 1) `div` 2)
 
 {- ARRAY HELPERS -}
--- | quicksort an array
-quicksort :: Ord a => [a] -> [a]
-quicksort [] = []
-quicksort (x:xs) =
-  quicksort [y | y <- xs, y < x] ++ [x] ++ quicksort [y | y <- xs, y >= x]
+
+qsort :: Ord a => [a] -> [a]
+qsort [] = []
+qsort arr = build arr []
+  where
+    build [] acc = acc
+    build (x:xs) acc = build lXS (x : build rXS acc)
+      where 
+        lXS = [y | y <- xs, y < x]
+        rXS = [y | y <- xs, y >= x]
 
 -- | Filter out smaller elements in an array.
 smallerElements :: Ord a => a -> [a] -> [a]
