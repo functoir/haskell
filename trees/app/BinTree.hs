@@ -202,3 +202,4 @@ smallerElements n xs = [y | y <- xs, y < n]
 -- | Filter out bigger elements in an array.
 biggerElements :: Ord a => a -> [a] -> [a]
 biggerElements n xs = [y | y <- xs, y > n]
+
