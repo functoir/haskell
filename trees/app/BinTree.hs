@@ -1,22 +1,10 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE BangPatterns #-}
 
-
-{-- | 
-  Module implementing a Binary Tree in Haskell.
-  Exported functions include: 
-    `BinTree (Empty, Node),
-    isEmpty,
-    buildTree, toArray,
-    contains, insert, delete,
-    isLT, isEQ, isGT,
-    size, height, sumTree,
-    minElem, maxElem`
---}
 module BinTree (
   BinTree (Empty, Node),
   isEmpty,
-  buildTree, toArray,
+  fromArray, toArray,
   contains, insert, delete,
   isLT, isEQ, isGT,
   size, height, sumTree,
@@ -43,7 +31,21 @@ instance (Eq a, Ord a) => Eq (BinTree a) where
         | not status = status
         | isEmpty t1 && isEmpty t2 = True
         | isEmpty t1 || isEmpty t2 = False
-        | otherwise = check (left t1) (left t2) $! (check (right t1) (right t2) $! (val t1 == val t2))
+        | otherwise =
+          let !l1 = left t1 ; !l2 = left t2
+              !r1 = right t1 ; !r2 = right t2
+          in check l1  l2 $! check r1 r2 $! val t1 == val t2
+
+-- | Generate a string representation of a `BinTree`.    
+instance Show a => Show (BinTree a) where
+  show t
+    | isEmpty t = "Empty tree."
+    | otherwise = unlines $ build t
+      where
+        build Empty = []
+        build (Node l v r) = show v : buildSub l r
+        buildSub l r = (pad "+- " "|  " $! build r) ++ (pad "`- " "|  " $! build l)
+        pad first rest = zipWith (++) (first : repeat rest)
 
 -- | Generate an ordering of two tree nodes.
 instance Ord a => Ord (BinTree a) where
@@ -52,20 +54,6 @@ instance Ord a => Ord (BinTree a) where
     | isEmpty t1 = GT
     | isEmpty t2 = LT
     | otherwise = compare (val t1) (val t2)
-
-
--- | Generate a string representation of a `BinTree`.
-instance Show a => Show (BinTree a) where
-  show t
-    | isEmpty t = "Empty tree."
-    | otherwise = unlines $ build t
-      where
-        build tree
-          | isEmpty tree = []
-          | otherwise =
-            show (val tree) : buildSub (left tree) (right tree)
-        buildSub l r = (pad "+- " "|  " $! build r) ++ (pad "`- " "|  " $! build l)
-        pad first rest = zipWith (++) (first : repeat rest)
 
 {--! Check Information -}
 -- | Check whether a given `BinTree` instance is the `Empty` constructor.
@@ -171,18 +159,19 @@ toArray node = build node []
     build (Node l v r) arr = build l $! v : build r arr
 
 -- | Construct a balanced Binary tree from a list of values.
-buildTree :: (Eq a, Ord a) => [a] -> BinTree a
-buildTree arr = constr Empty (qsort arr)
+fromArray :: (Eq a, Ord a) => [a] -> BinTree a
+fromArray arr = constr Empty $! qsort arr
   where
     constr :: (Ord a) => BinTree a -> [a] -> BinTree a
     constr t [] = t
     constr t array =
-      Node (constr (left inserted) (smallerElements item array))
+      Node (constr (left inserted) $! take index  array)
         (val inserted)
-        $! constr (right inserted) (biggerElements item array)
+        $! constr (right inserted) $! drop (index + 1) array
         where
           !inserted = insert item t
-          !item = array !! ((length array - 1) `div` 2)
+          !item = array !! index
+          !index = (length array - 1) `div` 2
 
 {- ARRAY HELPERS -}
 
