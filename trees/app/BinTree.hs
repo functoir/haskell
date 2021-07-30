@@ -5,13 +5,13 @@
 module BinTree (
   BinTree (Empty, Node),
   isEmpty,
-  buildTree,
+  buildTree, toArray,
   contains, insert, delete,
-  isLT, isEQ, isGT, size
+  isLT, isEQ, isGT,
+  size, height, sumTree,
+  minElem, maxElem
 ) where
 
-import qualified Data.List
-import Unsafe.Coerce ( unsafeCoerce )
 
 data BinTree a =
   Empty -- ^ Empty constructor
@@ -27,11 +27,10 @@ instance (Eq a, Ord a) => Eq (BinTree a) where
   (==) a b = check a b True
     where
       check t1 t2 status
-        | not status = False
+        | not status = status
         | isEmpty t1 && isEmpty t2 = True
         | isEmpty t1 || isEmpty t2 = False
         | otherwise = check (left t1) (left t2) $! (check (right t1) (right t2) $! (val t1 == val t2))
-  (/=) a b = not (a == b)
 
 instance Ord a => Ord (BinTree a) where
   compare t1 t2
@@ -50,11 +49,8 @@ instance Show a => Show (BinTree a) where
           | isEmpty tree = []
           | otherwise =
             show (val tree) : buildSub (left tree) (right tree)
-            where
-              buildSub l r =
-                (pad "+- " "|  " $! build r) ++ (pad "`- " "| " $! build l)
-                  where
-                    pad first rest = zipWith (++) (first : repeat rest)
+        buildSub l r = (pad "+- " "|  " $! build r) ++ (pad "`- " "|  " $! build l)
+        pad first rest = zipWith (++) (first : repeat rest)
 
 {--! Check Information -}
 -- | Check whether a given `BinTree` instance is the `Empty` constructor.
@@ -66,7 +62,7 @@ isEmpty   _   = False
 isEQ :: Eq a => a -> BinTree a -> Bool
 isEQ item node
   | isEmpty node = False
-  | otherwise = item == val node
+  | otherwise = val node == item
 
 -- | Check whether item in `Node` is less than given item.
 isLT :: Ord a => a -> BinTree a -> Bool
@@ -80,11 +76,21 @@ isGT item node
   | isEmpty node = False
   | otherwise = val node > item
 
+-- | Compute the size of a tree
 size :: BinTree a -> Int
-size node = check node 0
-    where
-      check Empty count = count
-      check node count = check (left node)  $! check (right node) $! count + 1
+size = treeFold (\_ acc -> acc + 1) 0
+
+-- | Compute the height of a tree.
+height :: BinTree a -> Int
+height node
+  | isEmpty node = 0
+  | otherwise = 1 + max (height (left node)) (height (right node))
+
+-- | Compute the sum of all items in tree. Must be Numeric data.
+sumTree :: Num a => BinTree a -> a
+sumTree = treeFold (+) 0
+
+
 
 -- | Check whether a`BinTree` instance contains given value.
 contains :: (Eq a, Ord a) => a -> BinTree a -> Bool
@@ -95,6 +101,19 @@ contains item node
   | isGT item node = contains item (left node)
   | otherwise = False
 
+-- | Get the smallest item in the binary tree.
+minElem :: (Ord a) => BinTree a -> a
+minElem node
+  | isEmpty (left node) = val node
+  | otherwise = minElem (left node)
+
+-- | Get the largest element in the binary tree.
+maxElem :: (Ord a) => BinTree a -> a
+maxElem node
+  | isEmpty (right node) = val node
+  | otherwise = maxElem (right node)
+
+-- ! Modify data
 -- | Percolate a value down a `BinTree` and insert in an appropriate position.
 insert :: (Eq a, Ord a) => a -> BinTree a -> BinTree a
 insert item node
@@ -107,29 +126,33 @@ insert item node
 -- | Delete value from a `BinTree` instance.
 delete :: (Eq a, Ord a) => a -> BinTree a -> BinTree a
 delete item node
-  | isEmpty node = node
-  | isLT item node = delete item (left node)
-  | isGT item node = delete item (right node)
-  | isEQ item node = delRoot node
-  | otherwise = node   -- !!! Handle outlier cases.
+  | isEmpty node = Empty
+  | isLT item node = Node (left node) (val node) (delete item (right node))
+  | isGT item node = Node (delete item (left node)) (val node) (right node)
+  | otherwise = delRoot node
+    where
+      delRoot :: Ord a => BinTree a -> BinTree a
+      delRoot t
+        | isEmpty (left t) && isEmpty (right t) = Empty
+        | isEmpty $ left t = right t
+        | isEmpty $ right t = left t
+        | otherwise = let successor = minElem $ right t in
+          Node (left t) successor (delete successor (right t))
+
+-- ! folding
+treeFold :: (a -> b -> b) -> b -> BinTree a -> b
+treeFold f acc Empty = acc
+treeFold f acc (Node l v r) = treeFold f (treeFold f (f v acc ) l) r
 
 
-delRoot :: Ord a => BinTree a -> BinTree a
-delRoot t
-  | isEmpty (left t) = right t
-  | isEmpty (right t) = left t
-  | otherwise = let v2 = leftmost (right t) in
-      Node (left t) v2 (delete v2 (right t))
-        where
-          leftmost :: (Ord a) => BinTree a -> a
-          leftmost node
-            | isEmpty (left node) = val node
-            | otherwise = leftmost (left node)
-          {-
-            OK to ignore the Empty constructor, since:
-            (a) we do not export this function and 
-            (b)we do not call it with the Empty constructor.
-          -}
+-- ! Tree to Array & Vuce versa
+
+-- | flatten a tree into an array
+toArray :: (Ord a) => BinTree a -> [a]
+toArray node = build node []
+  where
+    build Empty arr = arr
+    build t arr = build (left t) [] ++ [val t] ++ build (right t) []
 
 -- | Construct a balanced Binary tree from a list of values.
 buildTree :: (Eq a, Ord a) => [a] -> BinTree a
@@ -137,12 +160,13 @@ buildTree arr = constr Empty (quicksort arr)
   where
     constr :: (Ord a) => BinTree a -> [a] -> BinTree a
     constr t [] = t
-    constr t arr =
-      Node (constr (left inserted) (smallerElements item arr)) (val inserted) (constr (right inserted) (biggerElements item arr))
+    constr t array =
+      Node (constr (left inserted) (smallerElements item array))
+       (val inserted)
+        (constr (right inserted) (biggerElements item array))
         where
           inserted = insert item t
-          item = midElem arr
-          midElem arr = arr !! (length arr `div` 2)
+          item = array !! ((length array - 1) `div` 2)
 
 {- ARRAY HELPERS -}
 -- | quicksort an array
@@ -151,27 +175,16 @@ quicksort [] = []
 quicksort (x:xs) =
   quicksort [y | y <- xs, y < x] ++ [x] ++ quicksort [y | y <- xs, y >= x]
 
--- | Delete first occurence of an element from an array.
-delFromArr :: (Eq a) => a -> [a] -> [a]
-delFromArr n arr = removeFirst n arr []
-  where
-    removeFirst :: (Eq a) => a -> [a] -> [a] -> [a]
-    removeFirst num arr acc
-      | null arr = acc
-      | head arr == num = acc ++ tail arr
-      | otherwise = removeFirst num (tail arr) (acc ++ [head arr])
-
 -- | Filter out smaller elements in an array.
 smallerElements :: Ord a => a -> [a] -> [a]
-smallerElements n [] = []
+smallerElements _ [] = []
 smallerElements n (x:xs)
   | x < n = x : smallerElements n xs
   | otherwise = smallerElements n xs
 
 -- | Filter out bigger elements in an array.
 biggerElements :: Ord a => a -> [a] -> [a]
-biggerElements n [] = []
+biggerElements _ [] = []
 biggerElements n (x:xs)
   | x > n = x : biggerElements n xs
   | otherwise = biggerElements n xs
-
