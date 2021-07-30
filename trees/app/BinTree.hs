@@ -190,7 +190,7 @@ qsort [] = []
 qsort arr = build arr []
   where
     build [] acc = acc
-    build (x:xs) acc = build lXS (x : build rXS acc)
+    build (x:xs) acc = build lXS $! (x : build rXS acc)
       where 
         lXS = smallerElements x xs
         rXS = biggerElements x xs
