@@ -6,7 +6,7 @@
 
 NOTE: These projects were implemented from a learning standpoint, so some best practices may have been foregone, or, *there is just a better, different way to do it.* That's okay. I'm not at the top of the Haskell learning curve. I would be happy to hear suggestions or ideas, or general comments about my code. Thank you!
 
-#### Here's how the packages are organized:
+### Here's how the packages are organized:
 
 1. Each directory for individual concepts has an accompanying [Makefile](https://en.wikipedia.org/wiki/Make_(software))
 
