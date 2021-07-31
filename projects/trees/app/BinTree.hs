@@ -11,6 +11,10 @@ module BinTree (
   minElem, maxElem
 ) where
 
+import qualified Data.List
+import Unsafe.Coerce (unsafeCoerce)
+import Data.Typeable ()
+
 import Prelude
 
 data BinTree a =
