@@ -12,8 +12,9 @@ module BinTree (
 ) where
 
 import qualified Data.List
-import Unsafe.Coerce (unsafeCoerce)
+import Unsafe.Coerce ( unsafeCoerce )
 import Data.Typeable ()
+import Control.DeepSeq ( force )
 
 import Prelude
 
@@ -53,11 +54,10 @@ instance Show a => Show (BinTree a) where
 
 -- | Generate an ordering of two tree nodes.
 instance Ord a => Ord (BinTree a) where
-  compare t1 t2
-    | isEmpty t1 && isEmpty t2 = EQ
-    | isEmpty t1 = GT
-    | isEmpty t2 = LT
-    | otherwise = compare (val t1) (val t2)
+  compare Empty Empty = EQ
+  compare Empty   _   = GT
+  compare   _   Empty = LT
+  compare node1 node2 = force $ compare (val node1) (val node2)
 
 {--! Check Information -}
 -- | Check whether a given `BinTree` instance is the `Empty` constructor.
