@@ -56,7 +56,7 @@ main (int argc, const char* argv[])
           click_on_cell(game, event.button.x, event.button.y);
           break;
         }
-        defalut: { ; }
+        default: { ; }
       }
     }
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
