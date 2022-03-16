@@ -1,4 +1,4 @@
+-- module Modulo where
 
-
-data modulo A B = 
-  A, B, A `mod` B
+-- data MODS A B = 
+--   A, B, A `mod` B
