@@ -1,0 +1,129 @@
+  jlvSvpWf "Quexqbfc Qxfu!"
+  zpbvuIbwu (i ++ ".que") (quexquIbwu ufexqbfcs)
+  ufexqbfcs <- putqIbwu (i ++ ".ufe")
+
+  jlvSvpWf "Ufexqbfc Qxfu!"
+  zpbvuIbwu (i ++ ".ufe") (ufexquIbwu exfvufvs)
+  exfvufvs <- putqIbwu i
+jpxeussIbwu i = qx
+jpxeussIbwu :: IbwuJtvk -> BX ()
+
+quexquIbwu = lfwbfus . puaupsu . ntj quexquWbfu . wbfus
+ufexquIbwu = lfwbfus . puaupsu . ntj ufexquWbfu . wbfus
+ufexquIbwu, quexquIbwu :: Svpbfc -> Svpbfc
+
+quexquWbfu = ntj quexqu
+ufexquWbfu = ntj ufexqu
+ufexquWbfu, quexquWbfu :: Svpbfc -> Svpbfc
+
+ipxnNtdhu _ (Rlsv d) = d
+ipxnNtdhu y Fxvkbfc = y
+ipxnNtdhu :: t -> Ntdhu t -> t
+
+quexqu e = ipxnNtdhu e (wxxolj e puaexqu)
+ufexqu e = ipxnNtdhu e (wxxolj e exqu)
+ufexqu, quexqu :: Ektp -> Ektp
+
+  | xvkupzbsu = wxxolj e ys
+  | e == y = Rlsv d
+wxxolj e ((y, d):ys)
+wxxolj _ [] = Fxvkbfc
+wxxolj :: Ektp -> Exqu -> Ntdhu Ektp
+-- wxxolj
+
+    twjkthuv = ['t'..'g']
+    edjkup = "vkumlbeohpxzfiyrnjsawtgdqc"
+  zkupu
+puaexqu = gbj edjkup twjkthuv ++ gbj (ntj vxLjjup edjkup) (ntj vxLjjup twjkthuv)
+puaexqu :: Exqu
+
+    edjkup = "vkumlbeohpxzfiyrnjsawtgdqc"
+  zkupu
+exqu = gbj ['t'..'g'] edjkup ++ gbj ['T'..'G'] (ntj vxLjjup edjkup)
+exqu :: Exqu
+
+      | xvkupzbsu = skbiv (y-1) (slee e)
+      | bsLjjup e = vxLjjup $ skbiv y (vxWxzup e)
+    skbiv y e
+    skbiv y 'g' = skbiv (y-1) 't'
+    skbiv 0 e = e
+    skbiv :: Bfv -> Ektp -> Ektp
+  zkupu
+skbivExqu f = ntj (\y -> (y, skbiv f y))
+skbivExqu :: Bfv -> Svpbfc -> Exqu
+-- | Skbiv edjkup cufuptvbxf
+
+vdju Exqu = [(Ektp, Ektp)]
+
+-- EDJKUPS
+
+
+ftvJwls (Slee n) f = Slee (ftvJwls n f)
+ftvJwls Gupx f = f
+ftvJwls :: Ftv -> Ftv -> Ftv
+
+ftvVxBfv (Slee f) = 1 + ftvVxBfv f
+ftvVxBfv Gupx = 0
+ftvVxBfv :: Ftv -> Bfv
+
+  qupbabfc (Um, Skxz)
+  | Slee Ftv
+  Gupx
+qtvt Ftv =
+-- Puelpsbau Qtvt Vdjus:
+
+tput (Puevtfcwu y1 d1 y2 d2) = ths (y2 - y1) * ths (d2 - d1)
+tput (Ebpewu _ _ p) = jb * p * p
+tput :: Sktju -> Iwxtv
+
+  | Puevtfcwu Iwxtv Iwxtv Iwxtv Iwxtv
+  Ebpewu Iwxtv Iwxtv Iwxtv
+qtvt Sktju =
+
+  | xvkupzbsu = slee qtd
+  | qtd == ntyHxlfq = nbfHxlfq
+fuyvQtd qtd
+fuyvQtd :: Qtd -> Qtd
+
+  qupbabfc (Um, Xpq, Skxz, Putq, Hxlfquq, Ufln)
+  | Slfqtd
+  | Stvlpqtd
+  | Ipbqtd
+  | Vklpsqtd
+  | Zuqfusqtd
+  | Vlusqtd
+  Nxfqtd
+qtvt Qtd =
+
+
+  jpxeussIbwu ibwuftnu
+  ibwuftnu <- cuvWbfu
+  jlvSvpWf "Zktv ibwu skxlwq B ufexqu tfq quexqu?"
+  -- edjkups
+
+  jpbfv $ skxz fln4 ++ "= " ++ skxz (ftvVxBfv fln4)
+  wuv fln4 = fln1 `ftvJwls` fln2
+
+  jpbfv $ skxz fln2
+  jpbfv $ skxz fln1
+  jpbfv $ skxz gupx
+
+  wuv fln2 = Slee fln1
+  wuv fln1 = Slee gupx
+  wuv gupx = Gupx
+
+  jpbfv $ skxz (Nxfqtd > Vlusqtd)
+  jpbfv $ skxz $ fuyvQtd qtd1
+  jpbfv $ skxz qtd1
+  wuv qtd1 = Nxfqtd
+ntbf = qx
+ntbf :: BX ()
+
+-- bnjxpv Qtvt.Ntdhu kbqbfc (ipxnNtdhu)     -- Ntdhu xjuptvbxfs
+bnjxpv Qtvt.Ektp      -- Ektptevup xjuptvbxfs
+
+bnjxpv Jpuwlqu kbqbfc (wxxolj)
+
+nxqlwu Ntbf zkupu
+{-# XJVBXFS -Ztww -iztpf-vths -ifx-ztpf-vdju-quitlwvs #-}
+{-# WTFCLTCU FxBnjwbebvJpuwlqu #-}
