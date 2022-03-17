@@ -131,3 +131,14 @@ listIncr (x:xs) = (x + 1) : listIncr xs
 
 listIncr' :: Num a => [a] -> [a]
 listIncr' = map (+1)
+
+{-
+  Functions are first-class citizens.
+  They can be passed around, and can be returned from functions.
+  They can be stored in variables.
+  They can be used as arguments to other functions.
+  They can be returned from functions.
+  They can be used as the value of an expression.
+  They can be stored in lists, tuples, and other data structures.
+  They can be applied partially.
+-}
