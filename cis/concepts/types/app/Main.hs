@@ -1,10 +1,14 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleInstances #-}
+
 {-# OPTIONS -Wall -fwarn-tabs -fno-warn-type-defaults #-}
+
 module Main where
 
-import Prelude hiding (lookup)
+import Prelude hiding (lookup, Maybe, Nothing, Just, Either, Left, Right)
 
-import Data.Char      -- Character operations
+import Data.Char ( isUpper, toLower, toUpper )      -- Character operations
 -- import Data.Maybe hiding (fromMaybe)     -- Maybe operations
 
 main :: IO ()
@@ -13,6 +17,13 @@ main = do
   print $ show day1
   print $ show $ nextDay day1
   print $ show (Monday > Tuesday)
+
+  let weekDays = [Tuesday, Monday, Friday, Wednesday, Thursday]
+  let weekEnds = [Saturday, Sunday]
+
+  print weekDays
+  print $ mergesort weekDays
+  print weekEnds
 
   let zero = Zero
   let num1 = Succ zero
@@ -26,9 +37,36 @@ main = do
   print $ show num4 ++ "= " ++ show (natToInt num4)
 
   -- cyphers
-  putStrLn "What file should I encode and decode?"
-  filename <- getLine
-  processFile filename
+  -- putStrLn "What file should I encode and decode?"
+  -- filename <- getLine
+  -- processFile filename
+
+  -- printCode code
+
+  -- Polymorphic types
+  print $ safeDiv 4832934321 4154252
+  print $ safeDiv 4832934321 0
+
+  -- Trees
+  let tree1 = exTree :: Tree Int
+  print tree1
+  let tree2 = treeIncr tree1
+  print tree2
+  print tree1
+  print $ "pre-order: " ++ show (preOrder exTree)
+  print $ "in-order: " ++ show (inOrder exTree)
+  print $ "post-order: " ++ show (postOrder exTree)
+  print $ "size: " ++ show (size exTree)
+  print $ "[Tree]: " ++ show exTree
+  let list1 = convert tree1 :: [Int]
+  print $ "[List 1]: " ++ show list1
+
+  let list2 = convert tree2 :: [Int]
+  print $ "[List 2]: " ++ show list2
+
+  let ints = [1..5] ++ [5,4..1]
+  print $ "[List 3]: " ++ show ints
+  print $ "Sorted List 3" ++ show (mergesort ints)
 
 
 data Day =
@@ -45,6 +83,20 @@ nextDay :: Day -> Day
 nextDay day
   | day == maxBound = minBound
   | otherwise = succ day
+
+mergesort :: Ord a => [a] -> [a]
+mergesort arr
+  | null arr || singleton arr = arr
+  | otherwise = merge (mergesort left) (mergesort right)
+    where
+      singleton xs = length xs == 1
+      (left, right) = splitAt (length arr `div` 2) arr
+      merge :: Ord a => [a] -> [a] -> [a]
+      merge [] ys = ys    -- [x] ========== (x:[])
+      merge xs [] = xs
+      merge (x:xs) (y:ys)
+        | x < y = x : merge xs (y:ys)
+        | otherwise = y : merge (x:xs) ys
 
 data Shape =
   Circle Float Float Float
@@ -68,9 +120,11 @@ natPlus :: Nat -> Nat -> Nat
 natPlus Zero n = n
 natPlus (Succ m) n = Succ (natPlus m n)
 
-
+----------------------------------------------------------------
 -- CYPHERS
+----------------------------------------------------------------
 
+-- `type` is just an alias, whereas `data` is a representational type.
 type Code = [(Char, Char)]
 
 -- | Shift cypher generation
@@ -127,3 +181,110 @@ processFile f = do
   encodings <- readFile (f ++ ".enc")
   writeFile (f ++ ".dec") (decodeFile encodings)
   putStrLn "Decoding Done!"
+
+printCode :: Code -> IO ()
+printCode [] = return ()
+printCode ((orig, sub):xs) = do
+  print ([orig] ++ " -> " ++ [sub])
+  printCode xs
+
+----------------------------------------------------------------
+-- POLYMORPHIC TYPES
+----------------------------------------------------------------
+
+data Maybe a = Nothing | Just a
+  deriving (Eq, Show)
+
+data Either a b = Left a | Right b
+  deriving (Eq)
+
+instance (Show a, Show b) => Show (Either a b) where
+  show (Left a) = show a
+  show (Right b) = show b
+
+safeDiv :: Int -> Int -> Either String Int
+safeDiv _ 0 = Left "Division by zero"
+safeDiv x y = Right (x `div` y)
+
+data PrimaryColor = Red | Green | Blue
+  deriving (Show)
+
+instance Eq PrimaryColor where
+  Red == Red = True
+  Green == Green = True
+  Blue == Blue = True
+  _ == _ = False
+
+
+----------------------------------------------------------------
+-- TREES
+----------------------------------------------------------------
+
+class Convertible a b where
+  convert :: a -> b
+
+data Tree a = Leaf | Branch a (Tree a) (Tree a)
+  deriving (Show, Eq, Read)
+
+instance Convertible (Tree a) Int where
+  convert = size
+
+instance Convertible (Tree a) [a] where
+  convert = inOrder
+
+-- instance Convertible [a] Tree a where
+--   convert [] = Leaf
+--   convert [x] = Branch x
+--   convert arr = Branch val (convert left) (convert right)
+--     where
+--       mid = length arr `div` 2
+--       val = arr !! mid
+--       left = take (mid - 1) arr
+--       right = drop mid arr
+
+instance Show a => Convertible (Tree a) [Char] where
+  convert = show
+
+size :: Tree a -> Int
+size Leaf = 0
+size (Branch _ l r) = 1 + size l + size r
+
+exTree :: Tree Int
+exTree =
+  Branch 4
+    (
+      Branch 2
+      (
+        Branch 1 Leaf Leaf
+      )
+      (
+        Branch 3 Leaf Leaf
+      )
+    )
+    (
+      Branch 6 (
+        Branch 5 Leaf Leaf
+      ) (
+        Branch 7 Leaf Leaf
+      )
+    )
+
+treeMap :: (a -> b) -> Tree a -> Tree b
+treeMap _ Leaf = Leaf
+treeMap f (Branch x l r) =
+  Branch (f x) (treeMap f l) (treeMap f r)
+
+treePlus :: Num b => b -> Tree b -> Tree b
+treePlus x = treeMap (+ x)
+
+treeIncr :: (Num a ) => Tree a -> Tree a
+treeIncr = treePlus 1
+
+treeFold :: (a -> b -> b -> b) -> b -> Tree a -> b
+treeFold _ acc Leaf = acc
+treeFold f acc (Branch x l r) = f x (treeFold f acc l) (treeFold f acc r)
+
+preOrder, inOrder, postOrder :: Tree a -> [a]
+preOrder = treeFold (\x l r -> [x] ++ l ++ r) []
+inOrder = treeFold (\x l r -> l ++ [x] ++ r) []
+postOrder = treeFold (\x l r -> l ++ r ++ [x]) []
