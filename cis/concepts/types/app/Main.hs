@@ -18,55 +18,67 @@ main = do
   print $ show $ nextDay day1
   print $ show (Monday > Tuesday)
 
-  let weekDays = [Tuesday, Monday, Friday, Wednesday, Thursday]
+  let weekDays = [Monday .. Friday]
   let weekEnds = [Saturday, Sunday]
 
   print weekDays
   print $ mergesort weekDays
   print weekEnds
 
-  let zero = Zero
-  let num1 = Succ zero
-  let num2 = Succ num1
+  let revWeekDays = [Friday, Thursday .. Monday]
+  print revWeekDays
+  print $ mergesort revWeekDays
+  print $ quicksort revWeekDays
+  print $ mergesort [Monday]
+  print $ quicksort [Monday]
+  print [Monday, Wednesday .. Sunday]
+  let firstDay = minBound :: Day
+  let lastDay = maxBound :: Day
+  print $ "first: " ++ show firstDay ++ " last: " ++ show lastDay
 
-  print $ show zero
-  print $ show num1
-  print $ show num2
 
-  let num4 = num1 `natPlus` num2
-  print $ show num4 ++ "= " ++ show (natToInt num4)
+  -- let zero = Zero
+  -- let num1 = Succ zero
+  -- let num2 = Succ num1
 
-  -- cyphers
+  -- print $ show zero
+  -- print $ show num1
+  -- print $ show num2
+
+  -- let num4 = num1 `natPlus` num2
+  -- print $ show num4 ++ "= " ++ show (natToInt num4)
+
+  ---- cyphers
   -- putStrLn "What file should I encode and decode?"
   -- filename <- getLine
   -- processFile filename
 
   -- printCode code
 
-  -- Polymorphic types
-  print $ safeDiv 4832934321 4154252
-  print $ safeDiv 4832934321 0
+  ---- Polymorphic types
+  -- print $ safeDiv 4832934321 4154252
+  -- print $ safeDiv 4832934321 0
 
-  -- Trees
-  let tree1 = exTree :: Tree Int
-  print tree1
-  let tree2 = treeIncr tree1
-  print tree2
-  print tree1
-  print $ "pre-order: " ++ show (preOrder exTree)
-  print $ "in-order: " ++ show (inOrder exTree)
-  print $ "post-order: " ++ show (postOrder exTree)
-  print $ "size: " ++ show (size exTree)
-  print $ "[Tree]: " ++ show exTree
-  let list1 = convert tree1 :: [Int]
-  print $ "[List 1]: " ++ show list1
+  -- -- Trees
+  -- let tree1 = exTree :: Tree Int
+  -- print tree1
+  -- let tree2 = treeIncr tree1
+  -- print tree2
+  -- print tree1
+  -- print $ "pre-order: " ++ show (preOrder exTree)
+  -- print $ "in-order: " ++ show (inOrder exTree)
+  -- print $ "post-order: " ++ show (postOrder exTree)
+  -- print $ "size: " ++ show (size exTree)
+  -- print $ "[Tree]: " ++ show exTree
+  -- let list1 = convert tree1 :: [Int]
+  -- print $ "[List 1]: " ++ show list1
 
-  let list2 = convert tree2 :: [Int]
-  print $ "[List 2]: " ++ show list2
+  -- let list2 = convert tree2 :: [Int]
+  -- print $ "[List 2]: " ++ show list2
 
-  let ints = [1..5] ++ [5,4..1]
-  print $ "[List 3]: " ++ show ints
-  print $ "Sorted List 3" ++ show (mergesort ints)
+  -- let ints = [1..5] ++ [5,4..1]
+  -- print $ "[List 3]: " ++ show ints
+  -- print $ "Sorted List 3" ++ show (mergesort ints)
 
 
 data Day =
@@ -85,18 +97,26 @@ nextDay day
   | otherwise = succ day
 
 mergesort :: Ord a => [a] -> [a]
-mergesort arr
-  | null arr || singleton arr = arr
-  | otherwise = merge (mergesort left) (mergesort right)
+mergesort [] = []
+mergesort [x] = [x]
+mergesort arr = merge (mergesort left) (mergesort right)
     where
-      singleton xs = length xs == 1
       (left, right) = splitAt (length arr `div` 2) arr
+
       merge :: Ord a => [a] -> [a] -> [a]
-      merge [] ys = ys    -- [x] ========== (x:[])
+      merge [] ys = ys    -- [x] =========> (x:[])
       merge xs [] = xs
       merge (x:xs) (y:ys)
         | x < y = x : merge xs (y:ys)
         | otherwise = y : merge (x:xs) ys
+
+quicksort :: Ord a => [a] -> [a]
+quicksort [] = []
+quicksort (x:xs) =                --(x:[])
+  smallerSorted ++ [x] ++ biggerSorted
+  where
+    smallerSorted = quicksort [y | y <- xs, y <= x]
+    biggerSorted = quicksort [y | y <- xs, y > x]
 
 data Shape =
   Circle Float Float Float
@@ -224,7 +244,7 @@ class Convertible a b where
   convert :: a -> b
 
 data Tree a = Leaf | Branch a (Tree a) (Tree a)
-  deriving (Show, Eq, Read)
+  deriving (Show, Read)
 
 instance Convertible (Tree a) Int where
   convert = size
@@ -244,6 +264,30 @@ instance Convertible (Tree a) [a] where
 
 instance Show a => Convertible (Tree a) [Char] where
   convert = show
+
+instance Eq a => Eq (Tree a) where
+  Leaf == Leaf = True
+  (Branch x l1 r1) == (Branch y l2 r2) =
+    dataEq && leftEq && rightEq
+    where
+      dataEq = x == y
+      leftEq = l1 == l2
+      rightEq = r1 == r2
+  _ == _ = False
+
+instance Ord a => Ord (Tree a) where
+  (Branch x l1 r1) <= (Branch y l2 r2) =
+    dataLE && leftLE && rightLE
+    where
+      dataLE = x <= y
+      leftLE = l1 <= l2
+      rightLE = r1 <= r2
+  Leaf <= _ = True
+  _ <= Leaf = False
+
+instance Functor Tree where
+  fmap = treeMap
+
 
 size :: Tree a -> Int
 size Leaf = 0
@@ -288,3 +332,6 @@ preOrder, inOrder, postOrder :: Tree a -> [a]
 preOrder = treeFold (\x l r -> [x] ++ l ++ r) []
 inOrder = treeFold (\x l r -> l ++ [x] ++ r) []
 postOrder = treeFold (\x l r -> l ++ r ++ [x]) []
+
+toList :: Tree a -> [a]
+toList = inOrder
