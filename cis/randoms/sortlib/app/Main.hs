@@ -8,7 +8,6 @@ module Main where
 
 import Prelude
 import SortLib (
-  doSomething, 
   mergesort, 
   quicksort, 
   bubblesort,
@@ -17,14 +16,13 @@ import SortLib (
 
 main :: IO ()
 main = do
-  putStrLn "Hello, Haskell!"
-  print doSomething
 
   let xs = reverse [1,2,3,4,5,6,7,8,9,10]
   let emptyArr = [] :: [Int]
   let singleton = [2]
   let duo = [10, 9]
   let trio = [10, 9, 8]
+  -- let long = [1000, 999 .. 0]
 
   print $ "array:         " ++ show xs
   print $ "mergesort:     " ++ show (mergesort xs)
@@ -60,3 +58,10 @@ main = do
   print $ "bubblesort:    " ++ show (bubblesort trio)
   print $ "selectionsort: " ++ show (selectionsort trio)
   putStrLn ""
+
+  -- print $ "array:         " ++ show long
+  -- print $ "mergesort:     " ++ show (mergesort long)
+  -- print $ "quicksort:     " ++ show (quicksort long)
+  -- print $ "bubblesort:    " ++ show (bubblesort long)
+  -- print $ "selectionsort: " ++ show (selectionsort long)
+  -- putStrLn ""

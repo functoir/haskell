@@ -1,15 +1,14 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 {-# OPTIONS -Wall -fwarn-tabs -fno-warn-type-defaults #-}
 
-module cis.concepts.types.app.Main where
+module Main where
 
-import Prelude hiding (lookup, Maybe, Nothing, Just, Either, Left, Right)
-
-import Data.Char ( isUpper, toLower, toUpper )      -- Character operations
+import Data.Char (isUpper, toLower, toUpper) -- Character operations
 -- import Data.Maybe hiding (fromMaybe)     -- Maybe operations
+import Prelude hiding (Either, Just, Left, Maybe, Nothing, Right, lookup)
 
 main :: IO ()
 main = do
@@ -36,53 +35,51 @@ main = do
   let lastDay = maxBound :: Day
   print $ "first: " ++ show firstDay ++ " last: " ++ show lastDay
 
+-- let zero = Zero
+-- let num1 = Succ zero
+-- let num2 = Succ num1
 
-  -- let zero = Zero
-  -- let num1 = Succ zero
-  -- let num2 = Succ num1
+-- print $ show zero
+-- print $ show num1
+-- print $ show num2
 
-  -- print $ show zero
-  -- print $ show num1
-  -- print $ show num2
+-- let num4 = num1 `natPlus` num2
+-- print $ show num4 ++ "= " ++ show (natToInt num4)
 
-  -- let num4 = num1 `natPlus` num2
-  -- print $ show num4 ++ "= " ++ show (natToInt num4)
+---- cyphers
+-- putStrLn "What file should I encode and decode?"
+-- filename <- getLine
+-- processFile filename
 
-  ---- cyphers
-  -- putStrLn "What file should I encode and decode?"
-  -- filename <- getLine
-  -- processFile filename
+-- printCode code
 
-  -- printCode code
+---- Polymorphic types
+-- print $ safeDiv 4832934321 4154252
+-- print $ safeDiv 4832934321 0
 
-  ---- Polymorphic types
-  -- print $ safeDiv 4832934321 4154252
-  -- print $ safeDiv 4832934321 0
+-- -- Trees
+-- let tree1 = exTree :: Tree Int
+-- print tree1
+-- let tree2 = treeIncr tree1
+-- print tree2
+-- print tree1
+-- print $ "pre-order: " ++ show (preOrder exTree)
+-- print $ "in-order: " ++ show (inOrder exTree)
+-- print $ "post-order: " ++ show (postOrder exTree)
+-- print $ "size: " ++ show (size exTree)
+-- print $ "[Tree]: " ++ show exTree
+-- let list1 = convert tree1 :: [Int]
+-- print $ "[List 1]: " ++ show list1
 
-  -- -- Trees
-  -- let tree1 = exTree :: Tree Int
-  -- print tree1
-  -- let tree2 = treeIncr tree1
-  -- print tree2
-  -- print tree1
-  -- print $ "pre-order: " ++ show (preOrder exTree)
-  -- print $ "in-order: " ++ show (inOrder exTree)
-  -- print $ "post-order: " ++ show (postOrder exTree)
-  -- print $ "size: " ++ show (size exTree)
-  -- print $ "[Tree]: " ++ show exTree
-  -- let list1 = convert tree1 :: [Int]
-  -- print $ "[List 1]: " ++ show list1
+-- let list2 = convert tree2 :: [Int]
+-- print $ "[List 2]: " ++ show list2
 
-  -- let list2 = convert tree2 :: [Int]
-  -- print $ "[List 2]: " ++ show list2
+-- let ints = [1..5] ++ [5,4..1]
+-- print $ "[List 3]: " ++ show ints
+-- print $ "Sorted List 3" ++ show (mergesort ints)
 
-  -- let ints = [1..5] ++ [5,4..1]
-  -- print $ "[List 3]: " ++ show ints
-  -- print $ "Sorted List 3" ++ show (mergesort ints)
-
-
-data Day =
-  Monday
+data Day
+  = Monday
   | Tuesday
   | Wednesday
   | Thursday
@@ -104,22 +101,23 @@ mergesort arr = merge (mergesort left) (mergesort right)
     (left, right) = splitAt (length arr `div` 2) arr
 
     merge :: Ord a => [a] -> [a] -> [a]
-    merge [] ys = ys    -- [x] =========> (x:[])
+    merge [] ys = ys -- [x] =========> (x:[])
     merge xs [] = xs
-    merge (x:xs) (y:ys)
-      | x < y = x : merge xs (y:ys)
-      | otherwise = y : merge (x:xs) ys
+    merge (x : xs) (y : ys)
+      | x < y = x : merge xs (y : ys)
+      | otherwise = y : merge (x : xs) ys
 
 quicksort :: Ord a => [a] -> [a]
 quicksort [] = []
-quicksort (x:xs) =                --(x:[])
+quicksort (x : xs) =
+  --(x:[])
   smallerSorted ++ [x] ++ biggerSorted
   where
     smallerSorted = quicksort [y | y <- xs, y <= x]
     biggerSorted = quicksort [y | y <- xs, y > x]
 
-data Shape =
-  Circle Float Float Float
+data Shape
+  = Circle Float Float Float
   | Rectangle Float Float Float Float
 
 area :: Shape -> Float
@@ -127,8 +125,8 @@ area (Circle _ _ r) = pi * r * r
 area (Rectangle x1 y1 x2 y2) = abs (x2 - x1) * abs (y2 - y1)
 
 -- Recursive Data Types:
-data Nat =
-  Zero
+data Nat
+  = Zero
   | Succ Nat
   deriving (Eq, Show)
 
@@ -141,14 +139,16 @@ natPlus Zero n = n
 natPlus (Succ m) n = Succ (natPlus m n)
 
 cypher = "thequickbrownfxjmpsvlazydg"
+
 ----------------------------------------------------------------
 -- CYPHERS
 ----------------------------------------------------------------
 
 -- `type` is just an alias, whereas `data` is a representational type.
 type Code = [(Char, Char)]
+
 alphabet, cypher :: [Char]
-alphabet = ['a'..'z']
+alphabet = ['a' .. 'z']
 
 -- | Shift cypher generation
 shiftCode :: Int -> String -> Code
@@ -156,23 +156,23 @@ shiftCode n = map (\x -> (x, shift n x))
   where
     shift :: Int -> Char -> Char
     shift 0 c = c
-    shift x 'z' = shift (x-1) 'a'
+    shift x 'z' = shift (x - 1) 'a'
     shift x c
       | isUpper c = toUpper $ shift x (toLower c)
-      | otherwise = shift (x-1) (succ c)
+      | otherwise = shift (x - 1) (succ c)
 
 code, revcode :: Code
-code = 
-  zip alphabet cypher ++ 
-    zip (map toUpper alphabet) (map toUpper cypher)
+code =
+  zip alphabet cypher
+    ++ zip (map toUpper alphabet) (map toUpper cypher)
 revcode =
-  zip cypher alphabet ++
-    zip (map toUpper cypher) (map toUpper alphabet)
+  zip cypher alphabet
+    ++ zip (map toUpper cypher) (map toUpper alphabet)
 
 -- lookup
 lookup :: Char -> Code -> Maybe Char
 lookup _ [] = Nothing
-lookup c ((x, y):xs)
+lookup c ((x, y) : xs)
   | c == x = Just y
   | otherwise = lookup c xs
 
@@ -204,7 +204,7 @@ processFile f = do
 
 printCode :: Code -> IO ()
 printCode [] = return ()
-printCode ((orig, sub):xs) = do
+printCode ((orig, sub) : xs) = do
   print ([orig] ++ " -> " ++ [sub])
   printCode xs
 
@@ -234,7 +234,6 @@ instance Eq PrimaryColor where
   Green == Green = True
   Blue == Blue = True
   _ == _ = False
-
 
 ----------------------------------------------------------------
 -- TREES
@@ -288,29 +287,27 @@ instance Ord a => Ord (Tree a) where
 instance Functor Tree where
   fmap = treeMap
 
-
 size :: Tree a -> Int
 size Leaf = 0
 size (Branch _ l r) = 1 + size l + size r
 
 exTree :: Tree Int
 exTree =
-  Branch 4
-    (
-      Branch 2
-      (
-        Branch 1 Leaf Leaf
-      )
-      (
-        Branch 3 Leaf Leaf
-      )
+  Branch
+    4
+    ( Branch
+        2
+        ( Branch 1 Leaf Leaf
+        )
+        ( Branch 3 Leaf Leaf
+        )
     )
-    (
-      Branch 6 (
-        Branch 5 Leaf Leaf
-      ) (
-        Branch 7 Leaf Leaf
-      )
+    ( Branch
+        6
+        ( Branch 5 Leaf Leaf
+        )
+        ( Branch 7 Leaf Leaf
+        )
     )
 
 treeMap :: (a -> b) -> Tree a -> Tree b
@@ -321,7 +318,7 @@ treeMap f (Branch x l r) =
 treePlus :: Num b => b -> Tree b -> Tree b
 treePlus x = treeMap (+ x)
 
-treeIncr :: (Num a ) => Tree a -> Tree a
+treeIncr :: (Num a) => Tree a -> Tree a
 treeIncr = treePlus 1
 
 treeFold :: (a -> b -> b -> b) -> b -> Tree a -> b

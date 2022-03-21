@@ -20,7 +20,7 @@ mainAct [] = do
 mainAct args = do
   let greeting = unwords args
   name <- lookupEnv "USER"
-  putStrLn $ maybe "No user to greet!" (\name -> greeting ++ " " ++ name) name
+  putStrLn $ maybe "No user to greet!" (\x -> greeting ++ " " ++ x) name
 
 
 main :: IO ()
@@ -31,19 +31,19 @@ main = do
   else if "-v" `elem` args || "--version" `elem` args then
     printVersion >> exitSuccess
   else
-    mainAct args >> exitSuccess
+    mainAct args >> printVersion
 
 
 
   -- dummies
-  -- name <- getProgName
+  name <- getProgName
   -- args <- getArgs
-  -- user <- lookupEnv "USER"
-  -- editor <- lookupEnv "EDITOR"
-  -- shell <- lookupEnv "SHELL"
-  -- print $ "prog name : " ++ show name
-  -- print $ "commandline arguments : " ++ show args
-  -- print $ "user : " ++ show user
-  -- print $ "editor : " ++ show editor
-  -- print $ "shell : " ++ show shell
-  -- exitSuccess
+  user <- lookupEnv "USER"
+  editor <- lookupEnv "EDITOR"
+  shell <- lookupEnv "SHELL"
+  print $ "prog name : " ++ show name
+  print $ "commandline arguments : " ++ show args
+  print $ "user : " ++ show user
+  print $ "editor : " ++ show editor
+  print $ "shell : " ++ show shell
+  exitSuccess

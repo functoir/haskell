@@ -7,7 +7,6 @@
 
 
 module SortLib (
-  doSomething,
   mergesort,
   quicksort,
   bubblesort,
@@ -15,9 +14,6 @@ module SortLib (
 ) where
 
 import Prelude
-
-doSomething :: Int
-doSomething = 1
 
 {- |
 `merge-sort` an array of Ordinal values.
@@ -97,9 +93,9 @@ bubblesort arr = iter n arr
       where
         swap [] = []
         swap [x] = [x]
-        swap (x:y:xs)
-          | x > y = y : swap (x:xs)
-          | otherwise = x : swap (y:xs)
+        swap (x:y:rest)
+          | x > y = y : swap (x:rest)
+          | otherwise = x : swap (y:rest)
 
 
 {- |
