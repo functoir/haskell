@@ -24,44 +24,44 @@ main = do
   let trio = [10, 9, 8]
   -- let long = [1000, 999 .. 0]
 
-  print $ "array:         " ++ show xs
-  print $ "mergesort:     " ++ show (mergesort xs)
-  print $ "quicksort:     " ++ show (quicksort xs)
-  print $ "bubblesort:    " ++ show (bubblesort xs)
-  print $ "selectionsort: " ++ show (selectionsort xs)
+  putStrLn $ "array:         " ++ show xs
+  putStrLn $ "mergesort:     " ++ show (mergesort xs)
+  putStrLn $ "quicksort:     " ++ show (quicksort xs)
+  putStrLn $ "bubblesort:    " ++ show (bubblesort xs)
+  putStrLn $ "selectionsort: " ++ show (selectionsort xs)
   putStrLn ""
 
-  print $ "array:         " ++ show emptyArr
-  print $ "mergesort:     " ++ show (mergesort emptyArr)
-  print $ "quicksort:     " ++ show (quicksort emptyArr)
-  print $ "bubblesort:    " ++ show (bubblesort emptyArr)
-  print $ "selectionsort: " ++ show (selectionsort emptyArr)
+  putStrLn $ "array:         " ++ show emptyArr
+  putStrLn $ "mergesort:     " ++ show (mergesort emptyArr)
+  putStrLn $ "quicksort:     " ++ show (quicksort emptyArr)
+  putStrLn $ "bubblesort:    " ++ show (bubblesort emptyArr)
+  putStrLn $ "selectionsort: " ++ show (selectionsort emptyArr)
   putStrLn ""
 
-  print $ "array:         " ++ show singleton
-  print $ "mergesort:     " ++ show (mergesort singleton)
-  print $ "quicksort:     " ++ show (quicksort singleton)
-  print $ "bubblesort:    " ++ show (bubblesort singleton)
-  print $ "selectionsort: " ++ show (selectionsort singleton)
+  putStrLn $ "array:         " ++ show singleton
+  putStrLn $ "mergesort:     " ++ show (mergesort singleton)
+  putStrLn $ "quicksort:     " ++ show (quicksort singleton)
+  putStrLn $ "bubblesort:    " ++ show (bubblesort singleton)
+  putStrLn $ "selectionsort: " ++ show (selectionsort singleton)
   putStrLn ""
 
-  print $ "array:         " ++ show duo
-  print $ "mergesort:     " ++ show (mergesort duo)
-  print $ "quicksort:     " ++ show (quicksort duo)
-  print $ "bubblesort:    " ++ show (bubblesort duo)
-  print $ "selectionsort: " ++ show (selectionsort duo)
+  putStrLn $ "array:         " ++ show duo
+  putStrLn $ "mergesort:     " ++ show (mergesort duo)
+  putStrLn $ "quicksort:     " ++ show (quicksort duo)
+  putStrLn $ "bubblesort:    " ++ show (bubblesort duo)
+  putStrLn $ "selectionsort: " ++ show (selectionsort duo)
   putStrLn ""
 
-  print $ "array:         " ++ show trio
-  print $ "mergesort:     " ++ show (mergesort trio)
-  print $ "quicksort:     " ++ show (quicksort trio)
-  print $ "bubblesort:    " ++ show (bubblesort trio)
-  print $ "selectionsort: " ++ show (selectionsort trio)
+  putStrLn $ "array:         " ++ show trio
+  putStrLn $ "mergesort:     " ++ show (mergesort trio)
+  putStrLn $ "quicksort:     " ++ show (quicksort trio)
+  putStrLn $ "bubblesort:    " ++ show (bubblesort trio)
+  putStrLn $ "selectionsort: " ++ show (selectionsort trio)
   putStrLn ""
 
-  -- print $ "array:         " ++ show long
-  -- print $ "mergesort:     " ++ show (mergesort long)
-  -- print $ "quicksort:     " ++ show (quicksort long)
-  -- print $ "bubblesort:    " ++ show (bubblesort long)
-  -- print $ "selectionsort: " ++ show (selectionsort long)
+  -- putStrLn $ "array:         " ++ show long
+  -- putStrLn $ "mergesort:     " ++ show (mergesort long)
+  -- putStrLn $ "quicksort:     " ++ show (quicksort long)
+  -- putStrLn $ "bubblesort:    " ++ show (bubblesort long)
+  -- putStrLn $ "selectionsort: " ++ show (selectionsort long)
   -- putStrLn ""

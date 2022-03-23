@@ -15,6 +15,8 @@ import System.Environment( getArgs )
 import GHC.IO.Handle.FD ( stdout )
 import GHC.IO.Handle ( hFlush )
 import Control.Monad ( void )
+import System.IO ( isEOF )
+import Data.Char (isAlpha, toLower)
 
 import Prelude
 
@@ -35,48 +37,51 @@ process (file:files) = do
 processFile :: String -> IO String
 processFile contents = do
   void $ putStr "word? " >> hFlush stdout
-  getLine >>= \case
-    "" -> putStrLn "Type \"EOF\" to end stream"
-      >> processFile contents
-    "EOF" -> return contents
-    word -> do
-      printResults $ matchFile word contents
-      processFile contents
+  isEOF >>= \case
+    True -> return contents
+    False -> do
+      getLine >>= \case
+        "" -> putStrLn "Type \"EOF\" to end stream"
+          >> processFile contents
+        "EOF" -> return contents
+        word -> do
+          printResults $ matchFile word contents
+          processFile contents
+
+matchFile :: String -> String -> String
+matchFile word file =
+  rebuild "" $ colorWord word $ (map (matchLine word) . lines) file
+
+matchLine :: String -> String -> String
+matchLine word line
+  | w `isInfixOf` ws = line
+  | otherwise = ""
     where
-      matchFile :: String -> String -> String
-      matchFile word file =
-        rebuild "" $ colorWord word $ (map (matchLine word) . lines) file
-        where
-          matchLine :: String -> String -> String
-          matchLine word line
-            | w `isInfixOf` ws = line
-            | otherwise = ""
-              where
-                w = strip $ pack (lowercase word)
-                ws = pack $ lowercase line
+      w = strip $ pack (lowercase word)
+      ws = pack $ lowercase line
 
-          rebuild :: String -> [String] -> String
-          rebuild str [] = str
-          rebuild str ("":xs) = rebuild str xs
-          rebuild str (x:xs) = "\t" ++ x ++ "\n" ++ rebuild str xs
+rebuild :: String -> [String] -> String
+rebuild str [] = str
+rebuild str ("":xs) = rebuild str xs
+rebuild str (x:xs) = "\t" ++ x ++ "\n" ++ rebuild str xs
 
-          colorWord :: String -> [String] -> [String]
-          colorWord _ [] = []
-          colorWord target (sentence:sentences) =
-            unwords (colorInSentence target (words sentence)) : colorWord word sentences
-              where
-                colorInSentence :: String -> [String] -> [String]
-                colorInSentence _ [] = []
-                colorInSentence target (word:words)
-                  | w `isInfixOf` ws = (blue ++ word ++ green) : colorInSentence target words
-                  | ws `isInfixOf` w =
-                    if fullSequence target (word:words)
-                      then (blue ++ target ++ green) : colorInSentence target (dropSequence target words)
-                      else word : colorInSentence target words
-                  | otherwise = word : colorInSentence target words
-                    where
-                      !w = pack $ lowercase target
-                      !ws = pack $ lowercase $ filter (/= ' ') word
+colorWord :: String -> [String] -> [String]
+colorWord _ [] = []
+colorWord target (sentence:sentences) =
+  unwords (colorInSentence target (words sentence)) : colorWord target sentences
+    where
+      colorInSentence :: String -> [String] -> [String]
+      colorInSentence _ [] = []
+      colorInSentence target (word:words)
+        | w `isInfixOf` ws = (blue ++ word ++ green) : colorInSentence target words
+        | ws `isInfixOf` w =
+          if fullSequence target (word:words)
+            then (blue ++ target ++ green) : colorInSentence target (dropSequence target words)
+            else word : colorInSentence target words
+        | otherwise = word : colorInSentence target words
+          where
+            !w = pack $ lowercase target
+            !ws = pack $ lowercase $ filter (/= ' ') word
 
 fullSequence :: String -> [String] -> Bool
 fullSequence [] _ = True
@@ -119,7 +124,7 @@ printResults results =
 
 printDone :: String -> IO ()
 printDone file =
-  putStrLn $ format "DONE" file
+  putStrLn $ format "DONE" $ "Finished Processing: " ++ file
 
 format :: String -> String -> String
 format mode text
