@@ -140,11 +140,12 @@ format mode text
 --     (x:_) -> x == word
 
 type Color = String
-blue, cyan, green, red, reset :: Color
+blue, cyan, green, red, yellow, reset :: Color
 blue      = "\x1b[94m"
 cyan      = "\x1b[96m"
 green     = "\x1b[92m"
-red       = "\x1b[93m"
+red       = "\x1b[31m"
+yellow    = "\x1b[93m"
 reset     = "\x1b[0m"
 
 lowercase :: String -> String

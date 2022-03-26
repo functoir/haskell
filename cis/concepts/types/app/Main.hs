@@ -4,7 +4,7 @@
 
 {-# OPTIONS -Wall -fwarn-tabs -fno-warn-type-defaults #-}
 
-module cis.concepts.types.app.Main where
+module Main where
 
 import Prelude hiding (lookup, Maybe, Nothing, Just, Either, Left, Right)
 
