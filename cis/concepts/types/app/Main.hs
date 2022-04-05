@@ -80,16 +80,26 @@ main = do
   -- print $ "[List 3]: " ++ show ints
   -- print $ "Sorted List 3" ++ show (mergesort ints)
 
-
-data Day =
-  Monday
-  | Tuesday
-  | Wednesday
-  | Thursday
-  | Friday
-  | Saturday
-  | Sunday
+data Day = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday
   deriving (Eq, Ord, Show, Read, Bounded, Enum)
+
+instance Real Day where
+  toRational x = toRational $ fromEnum x
+
+instance Integral Day where
+  toInteger = fromIntegral
+  quotRem x y =
+    let (x', y') = (fromIntegral x, fromIntegral y)
+      in (x' `div` y', x' `mod` y')
+
+
+instance Num Day where
+  (+) day1 day2 = toEnum (fromEnum day1 + fromEnum day2)
+  (*) day1 day2 = toEnum (fromEnum day1 * fromEnum day2)
+  abs = id
+  signum = const 1
+  fromInteger = toEnum . fromIntegral
+  negate day = fromIntegral $ 6 - fromEnum day 
 
 nextDay :: Day -> Day
 nextDay day

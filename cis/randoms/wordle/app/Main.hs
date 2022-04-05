@@ -2,12 +2,12 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 
 {-# OPTIONS -Wall -fwarn-tabs -fno-warn-type-defaults #-}
 {-# OPTIONS  -fprint-potential-instances #-}
 {-# OPTIONS_GHC -Wno-name-shadowing #-}
-{-# LANGUAGE BlockArguments #-}
 
 module Main where
 
@@ -29,11 +29,15 @@ main = do
   let currentSet = filterWords len allWords
   targetWord <- getRandomWord currentSet
   when (length args > 1 && lowercase (args !! 1) == "h") $ do
-    putStrLn $ "Word count: " ++ show (length allWords)
-    putStrLn $ "Target word: " ++ colorAll targetWord red
+    putStrLn $ colorAll ("Word count: " ++ show (length allWords)) red
+    putStrLn $ colorAll ("Target word: " ++ targetWord) red
   loop targetWord >>= \case
     True -> putStrLn "You win!"
     False -> putStrLn "You lose!"
+
+  print $ fib' 10000
+  print "--------------------------------"
+  print $ fib 100
 
 
 loop :: Word -> IO Bool
@@ -55,7 +59,7 @@ prompt = putStr (colorAll "guess? " blue) >> hFlush stdout
 check :: Word -> Word -> Word
 check "" _ = ""
 check word guess
-  | lowercase word == lowercase  guess = colorAll word green
+  | lowercase word == lowercase guess = colorAll word green
   | otherwise = highlight word guess
     where
       highlight [] arr = arr
@@ -72,7 +76,7 @@ colorAll (x:xs) cc = color x cc ++ colorAll xs cc
 color :: Char -> Color -> Word
 color c cc = cc ++ [c] ++ reset
 
-type Word       = [Char]
+type Word       = String
 type WordList   = [Word]
 type Color      = String
 
@@ -123,3 +127,16 @@ getRandomWord wl = do
   let hi = length wl - 1  :: Int
   index <- getNumInRange lo hi
   return (wl !! index)
+
+
+fib :: Int -> Integer
+fib 0 = 0
+fib 1 = 1
+fib n = fib (n - 1) + fib (n - 2)
+
+fib' :: Integer -> Integer
+fib' n = iter (0, 1) n
+  where
+    iter :: (Integer, Integer) -> Integer -> Integer
+    iter (a, b) 0 = a
+    iter (a, b) n = iter (b, a + b) (n - 1)
